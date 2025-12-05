@@ -8,24 +8,27 @@ const appendColumn = container.querySelector('.append-column');
 const removeRow = container.querySelector('.remove-row');
 const removeColumn = container.querySelector('.remove-column');
 
-
-
-
 container.addEventListener('click', (e) => {
   if (e.target.tagName !== 'BUTTON') {
     return;
   }
-  const allRows = field.querySelectorAll('tr'); // Отримує колекцію всіх рядків
-  const firstRow = allRows[0]; // Отримує перший рядок
 
+  const allRows = field.querySelectorAll('tr'); // Отримує колекцію всіх рядків
   const maxCount = 10;
   const minCount = 2;
 
-  const currentCols = firstRow ? firstRow.cells.length : 0;
-  const currentRows = allRows.length ? allRows.length : 0;
+  const updateRows = field.querySelectorAll('tr').length;
+  const updateColumns = field.querySelectorAll('tr')
+    ? field.querySelectorAll('tr').cells.length
+    : 0;
+
+  appendRow.disabled = updateRows >= maxCount;
+  removeRow.disabled = updateRows <= minCount;
+  appendColumn.disabled = updateColumns >= maxCount;
+  removeColumn.disabled = updateColumns <= minCount;
 
   if (e.target === appendColumn) {
-    if (currentCols < maxCount) {
+    if (updateColumns < maxCount) {
       allRows.forEach((row) => {
         row.insertCell();
       });
@@ -33,32 +36,27 @@ container.addEventListener('click', (e) => {
   }
 
   if (e.target === removeColumn) {
-    if (currentCols > minCount) {
+    if (updateColumns > minCount) {
       allRows.forEach((row) => {
-        row.deleteCell(currentCols - 1);
+        row.deleteCell(updateColumns - 1);
       });
     }
   }
 
   if (e.target === removeRow) {
-    if (currentRows > minCount) {
-      tBody.deleteRow(currentRows - 1); // видалення останього рядку
+    if (updateRows > minCount) {
+      tBody.deleteRow(updateRows - 1); // видалення останього рядку
     }
   }
 
   if (e.target === appendRow) {
-    if (currentRows < maxCount) {
+    if (updateRows < maxCount) {
       const newR = tBody.insertRow();
 
-      for (let i = 0; i < currentCols; i++) {
+      for (let i = 0; i < updateColumns; i++) {
         // Додаємо нову комірку в кінець (індекс не потрібен)
         newR.insertCell(i);
       }
     }
   }
-
-  appendRow.disabled = currentRows >= maxCount;
-  removeRow.disabled = currentRows <= minCount;
-  appendColumn.disabled = currentCols >= maxCount;
-  removeColumn.disabled = currentCols <= minCount;
 });
