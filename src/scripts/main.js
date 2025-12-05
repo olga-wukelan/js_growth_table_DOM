@@ -8,11 +8,13 @@ const appendColumn = container.querySelector('.append-column');
 const removeRow = container.querySelector('.remove-row');
 const removeColumn = container.querySelector('.remove-column');
 
+
+
+
 container.addEventListener('click', (e) => {
   if (e.target.tagName !== 'BUTTON') {
     return;
   }
-
   const allRows = field.querySelectorAll('tr'); // Отримує колекцію всіх рядків
   const firstRow = allRows[0]; // Отримує перший рядок
 
@@ -23,16 +25,17 @@ container.addEventListener('click', (e) => {
   const currentRows = allRows.length ? allRows.length : 0;
 
   if (e.target === appendColumn) {
-    allRows.forEach((row) => {
-      const createTD = row.insertCell('td');
-      row.appendChild(createTD);
-    });
+    if (currentCols < maxCount) {
+      allRows.forEach((row) => {
+        row.insertCell();
+      });
+    }
   }
 
   if (e.target === removeColumn) {
     if (currentCols > minCount) {
       allRows.forEach((row) => {
-      row.deleteCell(currentCols - 1);
+        row.deleteCell(currentCols - 1);
       });
     }
   }
@@ -53,8 +56,9 @@ container.addEventListener('click', (e) => {
       }
     }
   }
-  appendRow.disabled = currentRows > maxCount;
-  appendColumn.disabled = currentCols > maxCount;
-  removeRow.disabled = currentRows < minCount;
-  removeColumn.disabled = currentCols < minCount;
+
+  appendRow.disabled = currentRows >= maxCount;
+  removeRow.disabled = currentRows <= minCount;
+  appendColumn.disabled = currentCols >= maxCount;
+  removeColumn.disabled = currentCols <= minCount;
 });
